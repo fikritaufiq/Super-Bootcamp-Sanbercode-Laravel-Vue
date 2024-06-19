@@ -1,0 +1,6 @@
+Data Peserta Super Bootcamp Laravel Vue Development
+1. Nama: Fikri Taufiq Rahman
+2. Email: fikritaufiq21@gmail.com
+3. Sistem Operasi yang digunakan: Windows 11
+4. Akun Gitlab/Github: github.com/fikritaufiq
+5. Akun Telegram: t.me/ftaufiq/
