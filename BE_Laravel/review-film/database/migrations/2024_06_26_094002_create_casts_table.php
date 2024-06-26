@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+class CreateCastsTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('casts', function (Blueprint $table) {
+            $table->uuid('id_uuid')->primary();
+            $table->string('name', 255);
+            $table->text('bio')->nullable();
+            $table->integer('age');
+            $table->timestamps();
+        });
+        
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('casts');
+    }
+}

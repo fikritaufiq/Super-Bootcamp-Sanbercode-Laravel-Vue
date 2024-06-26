@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMovieRequest extends FormRequest
+class MovieRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,20 +24,21 @@ class StoreMovieRequest extends FormRequest
         return [
             'title' => 'required|max:255',
             'summary' => 'required',
-            'year' => 'required|date',
-            'poster' => 'nullable|mimes:jpg,bmp,png',
-            'genre_id' => 'required|exists:genres,id',
+            'year' => 'required|string',
+            'poster' => 'mimes:jpg,bmp,png',
+            'genre_id' => 'required',
         ];
     }
-    public function messages()
+
+    public function messages(): array
     {
         return [
-            'title.required' => 'Title is required.',
-            'title.max' => 'Title cannot be longer than 255 characters.',
-            'summary.required' => 'Summary is required.',
-            'year.required' => 'Year is required.',
-            'poster.mimes' => 'Poster must be an image (jpg, bmp, png).',
-            'genre_id.required' => 'Genre is required.',
+            'title.required' => 'tidak boleh kosong',
+            'title.max' => 'tidak boleh kosong',
+            'summary.required' => 'tidak boleh kosong',
+            'year.required' => 'tidak boleh kosong',
+            'poster.mimes' => 'format poster hanya bisa jpg,bmp,png',
+            'genre_id.required' => 'tidak boleh kosong',
         ];
     }
 }
