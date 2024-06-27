@@ -9,7 +9,7 @@ class CreateReviewsTable extends Migration
     public function up()
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->uuid('id_uuid')->primary();
+            $table->uuid('id')->primary();
             $table->text('critic')->nullable();
             $table->integer('rating');
             $table->uuid('user_id_uuid');

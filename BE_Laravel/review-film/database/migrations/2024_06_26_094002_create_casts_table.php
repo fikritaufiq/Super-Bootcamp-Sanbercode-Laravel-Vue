@@ -9,7 +9,7 @@ class CreateCastsTable extends Migration
     public function up()
     {
         Schema::create('casts', function (Blueprint $table) {
-            $table->uuid('id_uuid')->primary();
+            $table->uuid('id')->primary();
             $table->string('name', 255);
             $table->text('bio')->nullable();
             $table->integer('age');

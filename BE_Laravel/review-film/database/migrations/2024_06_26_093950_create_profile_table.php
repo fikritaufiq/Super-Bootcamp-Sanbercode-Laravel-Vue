@@ -9,7 +9,7 @@ class CreateProfileTable extends Migration
     public function up()
     {
         Schema::create('profile', function (Blueprint $table) {
-            $table->uuid('id_uuid')->primary();
+            $table->uuid('id')->primary();
             $table->integer('age');
             $table->text('biodata')->nullable();
             $table->text('address')->nullable();

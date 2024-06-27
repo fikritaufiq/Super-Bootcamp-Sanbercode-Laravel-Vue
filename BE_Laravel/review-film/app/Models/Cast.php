@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Cast extends Model
 {
-    protected $fillable = ['name', 'bio', 'age'];
-    protected $primaryKey = 'id_uuid'; 
-    public $incrementing = false; 
-    protected $keyType = 'string'; 
+    use HasFactory, HasUuids;
 
+    protected $table = 'cast';
 
-    public $timestamps = true;
+    protected $fillable=['name', 'age', 'bio'];
 }
 
 

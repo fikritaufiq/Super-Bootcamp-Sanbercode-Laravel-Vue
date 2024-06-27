@@ -3,8 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\MovieController;
-use App\Http\Controllers\CastController;
-use App\Http\Controllers\GenreController;
+use App\Http\Controllers\API\GenreController;
+use App\Http\Controllers\API\CastController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,15 +18,12 @@ use App\Http\Controllers\GenreController;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::get('/cast', [CastController::class, 'index']);
-    Route::post('/cast', [CastController::class, 'store']);
-    Route::get('/cast/{id}', [CastController::class, 'show']);
-    Route::post('/cast/{id}', [CastController::class, 'update'])->middleware('method:PUT');
-    Route::post('/cast/{id}', [CastController::class, 'destroy'])->middleware('method:DELETE');
-
-    Route::get('/genre', [GenreController::class, 'index']);
-    Route::post('/genre', [GenreController::class, 'store']);
-    Route::get('/genre/{id}', [GenreController::class, 'show']);
-    Route::post('/genre/{id}', [GenreController::class, 'update'])->middleware('method:PUT');
-    Route::post('/genre/{id}', [GenreController::class, 'destroy'])->middleware('method:DELETE');
+    Route::get('/movie', [MovieController::class, 'index']);
+    Route::post('/movie', [MovieController::class, 'store']);
+    Route::get('/movie/{id}', [MovieController::class, 'show']);
+    Route::post('/movie/{id}', [MovieController::class, 'update']);
+    Route::post('/movie/{id}', [MovieController::class, 'destroy']);
+    
+    Route::apiResource('genre', GenreController::class);
+    Route::apiResource('cast', CastController::class);
 });
