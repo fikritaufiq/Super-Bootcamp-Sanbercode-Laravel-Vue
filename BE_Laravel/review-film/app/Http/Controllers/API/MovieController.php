@@ -22,20 +22,16 @@ class MovieController extends Controller
 
     public function store(MovieRequest $request)
     {
+        $data = $request->validated();
+
         if ($request->hasFile('poster')) {
-            $posterPath = $request->file('poster')->store('posters');
-        } else {
-            $posterPath = null;
+            $imageName = time().'.'.$request->poster->extension();
+            $request->poster->storeAs('public/images', $imageName);
+            $path = env('APP_URL') . '/storage/images/';
+            $data['poster'] = $path . $imageName;
         }
 
-        $movie = Movie::create([
-            'id' => $request->id,
-            'title' => $request->title,
-            'summary' => $request->summary,
-            'year' => $request->year,
-            'poster' => $posterPath,
-            'genre_id' => $request->genre_id
-        ]);
+        $movie = Movie::create($data);
 
         return response()->json([
             "message" => "Tambah Movie berhasil",
@@ -43,74 +39,67 @@ class MovieController extends Controller
         ], 201);
     }
 
-    public function show($id)
+    public function show(string $id)
     {
         $movie = Movie::find($id);
 
         if (!$movie) {
             return response()->json([
-                "message" => "Detail Data Movie",
-                "data" => []
+                "message" => "Movie dengan ID $id tidak ditemukan"
             ], 404);
         }
 
         return response()->json([
             "message" => "Detail Data Movie",
             "data" => $movie
-        ], 200);
+        ]);
     }
 
-    public function update(MovieRequest $request, $id)
+    public function update(string $id, MovieRequest $request)
     {
-        $movie = Movie::find($id);
+        $data = $request->validated();
+        $movieData = Movie::find($id);
 
-        if (!$movie) {
+        if (!$movieData) {
             return response()->json([
                 "message" => "Movie dengan ID $id tidak ditemukan"
             ], 404);
         }
+
         if ($request->hasFile('poster')) {
-            if ($movie->poster) {
-                Storage::delete($movie->poster);
+            if ($movieData->poster) {
+                $nameImage = basename($movieData->poster);
+                Storage::delete('public/images/' . $nameImage);
             }
-            $posterPath = $request->file('poster')->store('posters');
+            $imageName = time().'.'.$request->poster->extension();
+            $request->poster->storeAs('public/images', $imageName);
+            $path = env('APP_URL') . '/storage/images/';
+            $data['poster'] = $path . $imageName;
         } else {
-            $posterPath = $movie->poster;
+            $data['poster'] = $movieData->poster;
         }
 
-        $movie->fill([
-            'title' => $request->title,
-            'summary' => $request->summary,
-            'year' => $request->year,
-            'poster' => $posterPath,
-            'genre_id' => $request->genre_id
-        ])->save();
+        $movieData->update($data);
 
         return response()->json([
             "message" => "Update Movie berhasil",
-            "data" => $movie
-        ], 200);
+            "data" => $movieData
+        ], 201);
     }
 
     public function destroy($id)
     {
-        $movie = Movie::find($id);
+        $movieData = Movie::find($id);
 
-        if (!$movie) {
-            return response()->json([
-                "message" => "Movie dengan ID $id tidak ditemukan"
-            ], 404);
+        if ($movieData->poster) {
+            $nameImage = basename($movieData->poster);
+            Storage::delete('public/images/'.$nameImage);
         }
 
-        if ($movie->poster) {
-            Storage::delete($movie->poster);
-        }
-
-        $movie->delete();
+        $movieData->delete();
 
         return response()->json([
-            "message" => "Berhasil Menghapus movie"
+            "message" => "Berhasil Menghapus movie",
         ], 200);
     }
 }
-

@@ -1,19 +1,29 @@
 <?php
 
-// app/Models/Movie.php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Movie extends Model
 {
-    protected $fillable = ['id', 'title', 'summary', 'year', 'poster', 'genre_id'];
+    use HasFactory;
 
-    // Relasi dengan Genre
-    public function genre()
+    protected $fillable = [
+        'title', 'summary', 'year', 'poster', 'genre_id'
+    ];
+
+    protected static function boot()
     {
-        return $this->belongsTo(Genre::class, 'genre_id', 'id');
-    }
-}
+        parent::boot();
 
+        static::creating(function ($model) {
+            $model->id = (string) Str::uuid();
+        });
+    }
+
+    public $incrementing = false;
+
+    protected $keyType = 'uuid';
+}

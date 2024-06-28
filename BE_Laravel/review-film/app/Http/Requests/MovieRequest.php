@@ -26,7 +26,7 @@ class MovieRequest extends FormRequest
             'summary' => 'required',
             'year' => 'required|string',
             'poster' => 'mimes:jpg,bmp,png',
-            'genre_id' => 'required',
+            'genre_id' => 'required|exists:genres_id',
         ];
     }
 
@@ -39,6 +39,7 @@ class MovieRequest extends FormRequest
             'year.required' => 'tidak boleh kosong',
             'poster.mimes' => 'format poster hanya bisa jpg,bmp,png',
             'genre_id.required' => 'tidak boleh kosong',
+            'genre_id.exists' => 'id genre tidak ada di data genre',
         ];
     }
 }

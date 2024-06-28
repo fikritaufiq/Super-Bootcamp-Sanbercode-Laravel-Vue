@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\MovieController;
 use App\Http\Controllers\API\GenreController;
 use App\Http\Controllers\API\CastController;
-
+use App\Http\Controllers\API\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,12 +18,13 @@ use App\Http\Controllers\API\CastController;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::get('/movie', [MovieController::class, 'index']);
-    Route::post('/movie', [MovieController::class, 'store']);
-    Route::get('/movie/{id}', [MovieController::class, 'show']);
-    Route::post('/movie/{id}', [MovieController::class, 'update']);
-    Route::post('/movie/{id}', [MovieController::class, 'destroy']);
-    
+    Route::get('movie', MovieController::class);
     Route::apiResource('genre', GenreController::class);
     Route::apiResource('cast', CastController::class);
+    Route::prefix('auth')->group(function () {
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/logout', [AuthController::class, 'logout'])->midd;
+    });
+    Route::get('/me', [AuthController::class, 'getUser'])->middleware('auth:sanctum');
 });
