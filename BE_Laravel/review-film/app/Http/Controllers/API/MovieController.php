@@ -4,39 +4,38 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Movie;
 use App\Http\Requests\MovieRequest;
+use App\Models\Movie;
+use Illuminate\Support\Facades\Storage;
 
 class MovieController extends Controller
 {
-    public function index()
-    {
-        $movies = Movie::all();
-
-        return response()->json([
-            "message" => "Tampil data berhasil",
-            "data" => $movies
-        ], 200);
-    }
-
     public function store(MovieRequest $request)
     {
         $data = $request->validated();
 
         if ($request->hasFile('poster')) {
-            $imageName = time().'.'.$request->poster->extension();
+            $imageName = time().'-poster.'.$request->poster->extension();
             $request->poster->storeAs('public/images', $imageName);
             $path = env('APP_URL') . '/storage/images/';
-            $data['poster'] = $path . $imageName;
+            $data['poster'] = $path.$imageName;
         }
 
-        $movie = Movie::create($data);
+        Movie::create($data);
 
         return response()->json([
-            "message" => "Tambah Movie berhasil",
-            "data" => $movie
+            "message" => "Data berhasil ditambahkan"
         ], 201);
+    }
+
+    public function index()
+    {
+        $movies = Movie::all();
+
+        return response()->json([
+            "message" => "Berhasil mendapatkan daftar movie",
+            "data" => $movies
+        ]);
     }
 
     public function show(string $id)
@@ -50,7 +49,7 @@ class MovieController extends Controller
         }
 
         return response()->json([
-            "message" => "Detail Data Movie",
+            "message" => "Detail data movie dengan ID $id",
             "data" => $movie
         ]);
     }
@@ -58,48 +57,58 @@ class MovieController extends Controller
     public function update(string $id, MovieRequest $request)
     {
         $data = $request->validated();
-        $movieData = Movie::find($id);
 
-        if (!$movieData) {
+        $movie = Movie::find($id);
+
+        if (!$movie) {
             return response()->json([
                 "message" => "Movie dengan ID $id tidak ditemukan"
             ], 404);
         }
 
         if ($request->hasFile('poster')) {
-            if ($movieData->poster) {
-                $nameImage = basename($movieData->poster);
+            // Hapus gambar lama jika ada
+            if ($movie->poster) {
+                $nameImage = basename($movie->poster);
                 Storage::delete('public/images/' . $nameImage);
             }
-            $imageName = time().'.'.$request->poster->extension();
+
+            // Upload gambar baru
+            $imageName = time().'-poster.'. $request->poster->extension();
             $request->poster->storeAs('public/images', $imageName);
-            $path = env('APP_URL') . '/storage/images/';
-            $data['poster'] = $path . $imageName;
-        } else {
-            $data['poster'] = $movieData->poster;
+            $path = env('APP_URL').'/storage/images/';
+            $data['poster'] = $path.$imageName;
         }
 
-        $movieData->update($data);
+        $movie->update($data);
 
         return response()->json([
-            "message" => "Update Movie berhasil",
-            "data" => $movieData
+            "message" => "Movie dengan ID $id berhasil diperbarui"
         ], 201);
     }
 
     public function destroy($id)
     {
-        $movieData = Movie::find($id);
+        $movie = Movie::find($id);
 
-        if ($movieData->poster) {
-            $nameImage = basename($movieData->poster);
-            Storage::delete('public/images/'.$nameImage);
+        if (!$movie) {
+            return response()->json([
+                "message" => "Movie dengan ID $id tidak ditemukan"
+            ], 404);
         }
 
-        $movieData->delete();
+        // Hapus gambar dari storage jika ada
+        if ($movie->poster) {
+            $nameImage = basename($movie->poster);
+            Storage::delete('public/images/' . $nameImage);
+        }
+
+        $movie->delete();
 
         return response()->json([
-            "message" => "Berhasil Menghapus movie",
-        ], 200);
+            "message" => "Movie dengan ID $id berhasil dihapus"
+        ]);
     }
+
+
 }

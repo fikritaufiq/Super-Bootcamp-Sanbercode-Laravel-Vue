@@ -24,7 +24,7 @@ class CastRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'age' => 'required|integer',
-            'bio' => 'required|string',
+            'bio' => 'required|string'
         ];
     }
 }

@@ -4,26 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Movie extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $fillable = [
-        'title', 'summary', 'year', 'poster', 'genre_id'
-    ];
+    protected $table = 'movies';
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = (string) Str::uuid();
-        });
-    }
-
-    public $incrementing = false;
-
-    protected $keyType = 'uuid';
+    protected $fillable = ['title', 'summary', 'year', 'poster', 'genre_id'];
 }

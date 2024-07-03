@@ -12,31 +12,31 @@ class GenreController extends Controller
     public function index()
     {
         $genres = Genre::all();
+
         return response()->json([
-            "message" => "Berhasil mendapatkan daftar genre",
+            "message" => "Berhasil menampilkan daftar genre",
             "data" => $genres
         ], 200);
     }
 
     public function store(GenreRequest $request)
     {
-        $genre = Genre::create($request->validated());
+        Genre::create($request->all());
+
         return response()->json([
-            "message" => "Berhasil menambahkan genre",
-            "data" => $genre
-        ], 201);
+            "message" => "Berhasil menambahkan genre"
+        ], 200);
     }
 
     public function show(string $id)
     {
-        $genre = Genre::find($id);
+       $genre = Genre::find($id);
 
-        if (!$genre) {
-            return response()->json([
-                "message" => "ID $id tidak ditemukan",
-            ], 404);
-        }
-
+       if (!$genre) {
+        return response()->json([
+            "message" => "ID $id tidak ditemukan"
+        ], 404);
+    }
         return response()->json([
             "message" => "Berhasil mendapatkan detail data dengan ID $id",
             "data" => $genre
@@ -47,18 +47,20 @@ class GenreController extends Controller
     {
         $genre = Genre::find($id);
 
-        if (!$genre) {
-            return response()->json([
-                "message" => "ID $id tidak ditemukan",
-            ], 404);
-        }
+       if (!$genre) {
+        return response()->json([
+            "message" => "ID $id tidak ditemukan"
+        ], 404);
+    }
 
-        $genre->update($request->validated());
+    $genre->name = $request['name'];
+
+    $genre->save();
 
         return response()->json([
-            "message" => "Berhasil memperbarui genre dengan ID : $id",
+            "message" => "Berhasil mendapatkan detail data dengan ID $id",
             "data" => $genre
-        ], 200);
+        ], 201);
     }
 
     public function destroy(string $id)
@@ -66,15 +68,16 @@ class GenreController extends Controller
         $genre = Genre::find($id);
 
         if (!$genre) {
-            return response()->json([
-                "message" => "ID $id tidak ditemukan",
-            ], 404);
+         return response()->json([
+             "message" => "ID $id tidak ditemukan"
+         ], 404);
         }
-
+ 
         $genre->delete();
 
         return response()->json([
             "message" => "Berhasil menghapus genre dengan ID : $id",
-        ], 200);
-    }
+        ]);
+     }
 }
+

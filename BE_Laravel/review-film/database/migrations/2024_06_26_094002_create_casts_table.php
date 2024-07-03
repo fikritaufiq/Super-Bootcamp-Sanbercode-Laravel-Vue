@@ -10,9 +10,9 @@ class CreateCastsTable extends Migration
     {
         Schema::create('casts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 255);
-            $table->text('bio')->nullable();
+            $table->string('name');
             $table->integer('age');
+            $table->text('bio');
             $table->timestamps();
         });
         
