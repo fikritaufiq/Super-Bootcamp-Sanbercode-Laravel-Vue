@@ -9,6 +9,10 @@ use App\Models\Cast;
 
 class CastController extends Controller
 {
+    public function __construct(){
+        $this->middleware(['auth:api', 'isAdmin'])->only('index');
+    }
+
     public function index()
     {
         $casts = Cast::all();

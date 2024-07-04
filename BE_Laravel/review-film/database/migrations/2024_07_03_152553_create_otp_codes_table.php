@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profile', function (Blueprint $table) {
+        Schema::create('otp_codes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->integer('age');
-            $table->text('bio')->nullable();
-            $table->text('address');
+            $table->integer('otp')->unique();
+
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            
+            $table->timestamp('valid_until');
+
             $table->timestamps();
+
+
         });
     }
 
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('profile');
+        Schema::dropIfExists('otp_codes');
     }
 };

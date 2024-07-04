@@ -9,11 +9,20 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Carbon\Carbon;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
+    public static function boot(){
+
+        parent::boot();
+
+        static::created(function($model){
+            $model->generateOtpCode();
+        });
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -71,5 +80,30 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function generateOtpCode(){
+        do{
+            $randomNumber = mt_rand(100000, 999999);
+            $checkOtpCode = OtpCode::where('otp', $randomNumber)->first();
+        } while ($checkOtpCode);
+
+        $now = Carbon::now();
+
+        $otp_code = OtpCode::updateOrCreate(
+            ['user_id' => $this->id],
+            ['otp' => $randomNumber, 
+            'valid_until' => $now->addMinutes(5)
+            ]
+        );
+    }
+
+    public function Profile(){
+        return $this->hasOne(Profile::class, 'user_id');
+    }
+
+    public function otpcode()
+    {
+        return $this->hasOne(OtpCode::class, 'user_id');
     }
 }
