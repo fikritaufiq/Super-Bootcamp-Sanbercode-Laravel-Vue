@@ -56,7 +56,7 @@ class AuthController extends Controller
                 'message' => 'User berhasil di daftarkan',
                 'user' => $user,
                 'token' => $token
-            ]);
+            ], 201);
     }
 
     public function generateOtpCode(Request $request){

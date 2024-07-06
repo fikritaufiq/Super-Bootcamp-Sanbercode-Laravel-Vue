@@ -7,7 +7,9 @@ use App\Http\Controllers\API\GenreController;
 use App\Http\Controllers\API\CastController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProfileController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\API\RoleController;
+use App\Http\Controllers\API\CastMovieController;
+use App\Http\Controllers\API\ReviewController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,6 +28,10 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('movie', MovieController::class); // Route movies to index method
     Route::apiResource('genre', GenreController::class);
     Route::apiResource('cast', CastController::class);
+    Route::apiResource('role', RoleController::class);
+    Route::apiResource('cast-movie', CastMovieController::class);
+    Route::apiResource('review', ReviewController::class);
+    
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);

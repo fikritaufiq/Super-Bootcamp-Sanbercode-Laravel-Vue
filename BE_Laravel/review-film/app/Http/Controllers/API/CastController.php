@@ -9,9 +9,9 @@ use App\Models\Cast;
 
 class CastController extends Controller
 {
-    public function __construct(){
-        $this->middleware(['auth:api', 'isAdmin'])->only('index');
-    }
+    // public function __construct(){
+    //     $this->middleware(['auth:api', 'isAdmin'])->only('index');
+    // }
 
     public function index()
     {
@@ -29,7 +29,7 @@ class CastController extends Controller
 
         return response()->json([
             "message" => "Berhasil menambahkan cast"
-        ], 200);
+        ], 201);
     }
 
     public function show(string $id)
@@ -49,7 +49,7 @@ class CastController extends Controller
 
     public function update(CastRequest $request, string $id)
     {
-        $cast = cast::find($id);
+        $cast = Cast::find($id);
 
        if (!$cast) {
         return response()->json([
@@ -60,14 +60,14 @@ class CastController extends Controller
         $cast->update($request->all());
 
         return response()->json([
-            "message" => "Berhasil mendapatkan detail data dengan ID $id",
+            "message" => "Berhasil memperbarui cast dengan ID $id",
             "data" => $cast
-        ], 201);
+        ], 200);
     }
 
     public function destroy(string $id)
     {
-        $cast = cast::find($id);
+        $cast = Cast::find($id);
 
         if (!$cast) {
          return response()->json([
@@ -79,7 +79,7 @@ class CastController extends Controller
 
         return response()->json([
             "message" => "Berhasil menghapus cast dengan ID : $id",
-        ]);
+        ], 200);
      }
 
 }

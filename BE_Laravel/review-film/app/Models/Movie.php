@@ -4,13 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Movie extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
 
-    protected $table = 'movies';
+    protected $fillable = ['title', 'summary', 'poster', 'year'];
 
-    protected $fillable = ['title', 'summary', 'year', 'poster', 'genre_id'];
+    public function casts()
+    {
+        return $this->belongsToMany(Cast::class, 'cast_movie', 'movie_id', 'cast_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }
