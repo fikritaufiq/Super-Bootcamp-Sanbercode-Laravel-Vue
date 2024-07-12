@@ -16,13 +16,13 @@ switch (command) {
     });
     break;
   case 'login':
-    login(input, (err, result) => {
-      if (err) {
-        console.error('Error:', err);
-      } else {
+    login(input)
+      .then((result) => {
         console.log(result);
-      }
-    });
+      })
+      .catch((err) => {
+        console.error('Error:', err);
+      });
     break;
   case 'addSiswa':
     addSiswa(input, (err, result) => {

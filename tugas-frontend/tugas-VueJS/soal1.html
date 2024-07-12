@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal no 1</title>
+</head>
+<body>
+    <div id="app">
+        <label for="role">Role</label><br>
+        <select v-model="role" id="">
+            <option value="1">Imposter</option>
+            <option value="2">Crew</option>
+        </select>
+
+        <p v-if="role == '1'">Tugas Anda adalah untuk membunuh semua Crew</p>
+        <p v-else-if="role == '2'">Anda Bertugas untuk menyelesaikan semua task dan jangan sampai terbunuh</p>
+
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        let vm = Vue.createApp({
+            data(){
+                return {
+                    role: 0
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>

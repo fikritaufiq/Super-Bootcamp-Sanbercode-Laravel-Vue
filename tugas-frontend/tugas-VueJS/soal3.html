@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal no 3</title>
+</head>
+
+<body>
+    <div id="app">
+        <p style="font-weight: bold;" v-if="isError">{{ errMsg }}</p>
+        <form @submit.prevent="handleSubmit">
+            <label>Username</label> <br>
+            <input type="text" v-model="username"> <br><br>
+
+            <label>Password</label> <br>
+            <input type="password" v-model="password"> <br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+        <h2>Output</h2>
+        <ul>
+            <li v-for="(data, index) in output" :key="index">
+                <strong></strong> {{ data.username }} 
+            </li>
+            <li v-for="(data, index) in output" :key="index">
+                <strong></strong> {{ data.password }}
+            </li>
+        </ul>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        const { createApp, ref } = Vue;
+
+        createApp({
+            setup() {
+                const username = ref('');
+                const password = ref('');
+                const isError = ref(false);
+                const errMsg = ref('');
+                const output = ref([]);
+
+                const handleSubmit = () => {
+                    isError.value = false; // Reset error state
+
+                    if (username.value.length < 8) {
+                        isError.value = true;
+                        errMsg.value = 'Nama Depan minimal 8 karakter';
+                        return; // Stop submission if validation fails
+                    }
+
+                    if (password.value.length < 8) {
+                        isError.value = true;
+                        errMsg.value = 'Password minimal 8 karakter';
+                        return; // Stop submission if validation fails
+                    }
+
+                    if (password.value.length >= 8 && username.value.length >= 8) {
+                      output.value.push({
+                        username: username.value,
+                        password: password.value,
+                    });
+                    isError.value=false
+                    errMsg.value='';
+                    }
+
+                };
+
+                return {
+                    username,
+                    password,
+                    isError,
+                    errMsg,
+                    output,
+                    handleSubmit,
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>

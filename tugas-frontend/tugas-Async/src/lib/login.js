@@ -1,38 +1,36 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const login = async (input, callback) => {
+const login = (input) => {
   const [name, password] = input.split(',');
   const filePath = path.resolve(__dirname, '../data.json');
 
-  try {
-    await fs.writeFile(filePath, '[]', { flag: 'wx' });
-  } catch (error) {
-    if (error.code !== 'EEXIST') {
-      return callback(error);
-    }
-  }
+  // Membaca file data.json
+  return fs.readFile(filePath, 'utf8')
+    .then((data) => {
+      const users = JSON.parse(data);
 
-  try {
-    const data = await fs.readFile(filePath, 'utf8');
-    const users = JSON.parse(data);
+      // Mencari pengguna berdasarkan nama dan password
+      const user = users.find(u => u.name === name && u.password === password);
 
-    const user = users.find(u => u.name === name && u.password === password);
-    if (user) {
-      if (user.isLogin) {
-        return callback(null, 'User already logged in');
+      if (!user) {
+        return Promise.reject('Login gagal: User not found or incorrect password');
       }
-      user.isLogin = true;
-      await fs.writeFile(filePath, JSON.stringify(users, null, 2), 'utf8');
 
-      const updatedData = await fs.readFile(filePath, 'utf8');
-      callback(null, updatedData + "\n" + "\n" + 'Berhasil login');
-    } else {
-      callback(null, 'Login gagal');
-    }
-  } catch (error) {
-    callback(error);
-  }
+      if (user.isLogin) {
+        return Promise.reject('Login gagal: User already logged in');
+      }
+
+      // Mengatur status login menjadi true
+      user.isLogin = true;
+
+      // Menyimpan perubahan kembali ke file
+      return fs.writeFile(filePath, JSON.stringify(users, null, 2), 'utf8')
+        .then(() => 'Berhasil login');
+    })
+    .catch((err) => {
+      return Promise.reject(err);
+    });
 };
 
 module.exports = login;
