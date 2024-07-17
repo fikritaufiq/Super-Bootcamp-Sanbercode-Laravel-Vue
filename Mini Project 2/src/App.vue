@@ -2,23 +2,18 @@
   <div class="wrapper">
     <Navbar @scrollTo="scrollTo" />
     <div class="content mt-16">
-      <Home ref="homeSection" />
-      <Skills ref="skillsSection" />
-      <Portfolio ref="portfolioSection" />
-      <Experience ref="experienceSection" />
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </div>
-
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import Navbar from './components/Navbar.vue';
-import Home from './components/Home.vue';
-import Skills from './components/Skills.vue';
-import Portfolio from './components/Portfolio.vue';
-import Experience from './components/Experience.vue';
-import Footer from './components/Footer.vue';
 
 const homeSection = ref(null);
 const skillsSection = ref(null);
@@ -32,19 +27,18 @@ const scrollTo = (section) => {
     portfolioSection,
     experienceSection,
   }[section];
-  if (element.value) {
+  if (element && element.value) {
     element.value.scrollIntoView({ behavior: 'smooth' });
   }
 };
 </script>
 
 <style scoped>
-
 .wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #3123b2, #9ec2db); /* Gradient dari atas (#2d0f47) ke bawah (#6096ba) */
+  background: linear-gradient(to bottom, #3123b2, #9ec2db);
 }
 
 .content {
@@ -53,16 +47,21 @@ const scrollTo = (section) => {
 
 .section {
   margin-bottom: 2rem;
-  color: black; /* Sesuaikan warna teks jika diperlukan */
+  color: black;
   background-color: #9ec2db;
-  max-width: 1000px; /* Atur lebar maksimal sesuai kebutuhan */
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 
 html {
   scroll-behavior: smooth;
 }
-
-/* Tambahkan gaya responsif sesuai kebutuhan */
 </style>
