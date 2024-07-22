@@ -17,15 +17,15 @@
       </div>
       <ul
         tabindex="0"
-        class="menu menu-sm dropdown-content mt-3 z-[1] w-52 bg-black p-2 shadow">
+        class="menu menu-sm dropdown-content mt-3 z-[1] w-52 bg-black p-2 shadow text-white">
         <li><RouterLink to="/">Home</RouterLink></li>
         <li><RouterLink to="/skills">Skills</RouterLink></li>
         <li><RouterLink to="/experience">Experience</RouterLink></li>
         <li><RouterLink to="/portfolio">Portfolio</RouterLink></li>
       </ul>
     </div>
-    <div class="text-white font-bold ml-2">My Portfolio</div>
-    <ul class="hidden lg:flex space-x-4">
+    <div class="text-white font-bold ml-2 text-2xl lg:text-2xl">My Portfolio</div>
+    <ul class="hidden lg:flex space-x-4 text-white">
       <li><RouterLink to="/">Home</RouterLink></li>
       <li><RouterLink to="/skills">Skills</RouterLink></li>
       <li><RouterLink to="/experience">Experience</RouterLink></li>
