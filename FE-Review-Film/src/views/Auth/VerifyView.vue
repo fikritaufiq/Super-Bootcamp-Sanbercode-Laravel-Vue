@@ -1,60 +1,73 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Verifikasi Akun</h1>
-    <p class="mb-4">Masukkan OTP yang telah dikirim melalui email Anda</p>
+    <div v-if="showVerificationBox">
+      <h1 class="text-2xl font-bold mb-4">Verifikasi Akun</h1>
+      <p class="mb-4">Masukkan OTP yang telah dikirim melalui email Anda</p>
 
-    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-sm mx-auto">
-      <form @submit.prevent="submitOTP">
-        <div class="mb-4">
-          <label for="otp" class="block text-sm font-medium">Kode OTP</label>
-          <input
-            type="text"
-            id="otp"
-            maxlength="6"
-            class="otp-input"
-            v-model="otp"
-            @input="formatOTP"
-          />
-        </div>
+      <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-sm mx-auto">
+        <form @submit.prevent="submitOTP">
+          <div class="mb-4">
+            <label for="otp" class="block text-sm font-medium">Kode OTP</label>
+            <input
+              type="text"
+              id="otp"
+              maxlength="6"
+              class="otp-input"
+              v-model="otp"
+              @input="formatOTP"
+            />
+          </div>
 
-        <button
-          type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Verifikasi
-        </button>
-        
-        <p class="mt-4 text-center text-blue-400 cursor-pointer" @click="resendOTP">
-          Kirim ulang OTP
-        </p>
-      </form>
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Verifikasi
+          </button>
+          
+          <p class="mt-4 text-center text-blue-400 cursor-pointer" @click="resendOTP">
+            Kirim ulang OTP
+          </p>
+        </form>
+      </div>
+
+      <div v-if="notification" class="notification mt-4 p-4 bg-green-600 text-white rounded-lg">
+        {{ notification }}
+      </div>
+
+      <div v-if="error" class="notification mt-4 p-4 bg-red-600 text-white rounded-lg">
+        {{ error }}
+      </div>
     </div>
-
-    <div v-if="notification" class="notification mt-4 p-4 bg-green-600 text-white rounded-lg">
-      {{ notification }}
-    </div>
-
-    <div v-if="error" class="notification mt-4 p-4 bg-red-600 text-white rounded-lg">
-      {{ error }}
+    <div v-else>
+      <h2 class="text-2xl font-bold mb-4">Akun berhasil diverifikasi!</h2>
+      <p class="mb-4">Anda sekarang dapat melanjutkan ke halaman utama.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/AuthStore';
 
 const otp = ref('');
 const notification = ref('');
 const error = ref('');
+const showVerificationBox = ref(true); // State untuk mengontrol tampilan
 
 const authStore = useAuthStore();
+
+// Panggil getCurrentUser saat komponen di-mount
+onMounted(async () => {
+  await authStore.getCurrentUser(); // Ambil data pengguna
+});
 
 const submitOTP = async () => {
   try {
     error.value = '';
     await authStore.verifyAccount(otp.value);
     notification.value = 'Akun berhasil diverifikasi!';
+    showVerificationBox.value = false; // Sembunyikan kotak verifikasi setelah berhasil
   } catch (err) {
     console.error('Kesalahan pengiriman OTP:', err.message);
     if (err.response?.status === 401) {
@@ -72,13 +85,18 @@ const formatOTP = () => {
 };
 
 const resendOTP = async () => {
+  // Pastikan currentUser dan email tersedia
+  if (!authStore.currentUser || !authStore.currentUser.email) {
+    console.error('Pengguna tidak terdaftar atau email tidak tersedia.');
+    return; // Hentikan eksekusi jika email tidak ada
+  }
+
+  const email = authStore.currentUser.email; // Ambil email dari pengguna yang sedang login
   try {
-    error.value = ''; 
-    await authStore.generateOtpCode();
-    notification.value = 'Penghasilan kode OTP berhasil, silakan cek email Anda.';
-  } catch (err) {
-    console.error('Kesalahan pengiriman ulang OTP:', err.message);
-    error.value = 'Gagal mengirim ulang OTP ';
+    await authStore.generateOtpCode(email); // Panggil fungsi dengan email
+    console.log('Kode OTP berhasil dikirim ke:', email);
+  } catch (error) {
+    console.error('Gagal mengirim OTP:', error);
   }
 };
 </script>

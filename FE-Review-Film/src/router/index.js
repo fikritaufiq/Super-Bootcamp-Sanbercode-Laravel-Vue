@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/Auth/LoginView.vue';
 import RegisterView from '../views/Auth/RegisterView.vue';
 import VerifyView from '../views/Auth/VerifyView.vue';
-import FilmView from '../views/FilmView.vue';
+import MovieView from '../views/MovieView.vue';
 import GenreView from '../views/GenreView.vue';
 import CastView from '../views/CastView.vue';
 import ProfileView from '../views/ProfileView.vue';
@@ -16,13 +16,13 @@ const routes = [
     path: '/',
     component: PublicLayout,
     children: [
-      { path: '/', name: 'home', component: HomeView },
-      { path: 'film', name: 'film', component: FilmView },
+      { path: '', name: 'home', component: HomeView }, // Changed name to 'Home'
+      { path: 'movie', name: 'movie', component: MovieView },
       { path: 'genre', name: 'genre', component: GenreView },
       { path: 'cast', name: 'cast', component: CastView },
       { path: 'profile', name: 'profile', component: ProfileView,
         meta: { isVerified: true }
-       },
+      },
     ]
   },
   {
@@ -43,26 +43,28 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach(async(to, from) => {
-  const authStore = await useAuthStore()
+router.beforeEach(async (to, from) => {
+  const authStore = await useAuthStore();
+  
+  // Cek jika pengguna sudah login dan mencoba mengakses halaman login atau register
   if (to.meta.isAuthTrue && authStore.tokenUser) {
-    alert("Harus Logout terlebih dahulu")
-    return{
-      path:"/"
-    }
+    alert("Harus Logout terlebih dahulu");
+    return { path: "/" };
   }
-  if (to.meta.isVerified && !authStore.currentUser.email_verified_at) {
-    alert("Anda belum terverifikasi")
-    return{
-      path:"/"
-    }
-  }
-  if (to.meta.isAuth && !authStore.tokenUser) {
-    alert("Anda belum Login")
-    return{
-      path:"/"
-    }
-  }
-})
 
-export default router
+  // Cek jika halaman memerlukan verifikasi dan pengguna belum terverifikasi
+  console.log("Email Verified At:", authStore.currentUser?.email_verified_at); // Debugging
+  console.log("Is Verified:", authStore.isVerified); // Debugging
+  if (to.meta.isVerified && !authStore.currentUser?.email_verified_at) {
+    alert("Anda belum terverifikasi");
+    return { path: "/" };
+  }
+
+  // Cek jika pengguna belum login
+  if (to.meta.isAuth && !authStore.tokenUser) {
+    alert("Anda belum Login");
+    return { path: "/" };
+  }
+});
+
+export default router;

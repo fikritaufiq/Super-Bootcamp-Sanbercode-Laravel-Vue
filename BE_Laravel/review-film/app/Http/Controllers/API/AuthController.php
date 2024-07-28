@@ -49,8 +49,13 @@ class AuthController extends Controller
     
         $token = JWTAuth::fromUser($user);
 
-        // Mail::to($user->email)->queue(new RegisterMail($user));
-        Mail::to($user->email)->queue(new RegisterMail($user));
+        try {
+            Mail::to($user->email)->queue(new RegisterMail($user));
+        } catch (\Exception $e) {
+            \Log::error('Gagal mengirim email registrasi: ' . $e->getMessage());
+            // Anda bisa memutuskan apakah ingin mengembalikan respons error atau melanjutkan
+            // return response()->json(['error' => 'Gagal mengirim email registrasi'], 500);
+        }
     
             return response()->json([
                 'message' => 'User berhasil di daftarkan',
@@ -110,22 +115,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validasi input dari request
+        \Log::info('Login attempt', ['email' => $request->email]);
         $credentials = $request->only('email', 'password');
 
-        if (!$user = auth()->attempt($credentials)) {
-            return response()->json(
-                [
-                    'message' => 'User Invalid'
-                ], 401);
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['message' => 'User Invalid'], 401);
         }
 
-        $userData = User::where('email', $request['email'])->first();
-
-        $token = JWTAuth::fromUser($userData);
+        $user = auth()->user();
 
         return response()->json([
-            'user' => $userData,
+            'user' => $user,
             'token' => $token
         ]);
     } 
@@ -168,9 +168,14 @@ class AuthController extends Controller
 
     public function logout()
     {
-        auth()->logout();
-        return response()->json(['message' => 'Logout berhasil']);
+        \Log::info('Logout attempt', ['user' => auth()->user()]);
+        try {
+            auth()->logout();
+            \Log::info('Logout successful');
+            return response()->json(['message' => 'Logout berhasil']);
+        } catch (\Exception $e) {
+            \Log::error('Logout failed', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Logout gagal'], 500);
+        }
     }
 }
-    
-

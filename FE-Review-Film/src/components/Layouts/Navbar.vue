@@ -36,7 +36,7 @@ const handleLogout = () => {
 
 const navItems = [
   { id: 1, name: 'Home', url: '/' },
-  { id: 2, name: 'Film', url: '/film' },
+  { id: 2, name: 'Movie', url: '/movie' },
   { id: 3, name: 'Genre', url: '/genre' },
   { id: 4, name: 'Cast', url: '/cast' },
   { id: 5, name: 'Profile', url: '/profile' },

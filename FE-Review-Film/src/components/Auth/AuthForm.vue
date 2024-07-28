@@ -3,18 +3,18 @@
     <div class="auth-card">
       <h1 class="text-2xl font-bold mb-4">{{ title }}</h1>
       <div v-if="authStore.isError" role="alert" class="alert alert-error bg-red-500 text-white p-2 rounded-md mb-4"> 
-      <span>{{authStore.errorMsg}}</span>
+        <span>{{ authStore.errorMsg }}</span>
       </div>
       <form @submit.prevent="handleAuth" class="space-y-4">
         <div v-if="showUsername">
-          <label for="username" class="block text-sm font-medium text-white">Username</label>
+          <label for="name" class="block text-sm font-medium text-white">Username</label>
           <input
-            id="username"
-            v-model="userInput.username"
+            id="name"
+            v-model="userInput.name"
             type="text"
-            placeholder="Enter your username"
+            placeholder="Enter your name"
             class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm text-black"
-            autocomplete="username"
+            autocomplete="name"
           />
         </div>
         <div>
@@ -39,6 +39,17 @@
             autocomplete="current-password"
           />
         </div>
+        <div v-if="showPasswordConfirmation">
+          <label for="password_confirmation" class="block text-sm font-medium text-white">Konfirmasi Password</label>
+          <input
+            id="password_confirmation"
+            v-model="userInput.password_confirmation"
+            type="password"
+            placeholder="Konfirmasi password Anda"
+            class="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm text-black"
+            autocomplete="new-password"
+          />
+        </div>
         <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">{{ buttonText }}</button>
       </form>
     </div>
@@ -52,17 +63,28 @@ import { useAuthStore } from '@/stores/AuthStore';
 const authStore = useAuthStore();
 
 const userInput = reactive({
-  username: '',
+  name: '',
   email: '',
-  password: ''
+  password: '',
+  password_confirmation: ''
 });
 
-const { loginUser } = authStore;
+// Ambil fungsi dari authStore
+const { loginUser, registerUser } = authStore;
 
+// Fungsi untuk menangani autentikasi
 const handleAuth = () => {
-  loginUser(userInput);
+  if (props.showUsername && userInput.password_confirmation) { // Memeriksa apakah dalam mode registrasi
+    console.log("Memanggil fungsi registrasi dengan data:", userInput);
+    registerUser(userInput);
+  } else {
+    console.log("Memanggil fungsi login dengan data:", userInput);
+    loginUser({
+      email: userInput.email,
+      password: userInput.password
+    });
+  }
 };
-
 
 const props = defineProps({
   title: {
@@ -73,13 +95,13 @@ const props = defineProps({
     type: String,
     default: 'Submit'
   },
-  handleSubmit: {
-    type: Function,
-    default: () => {}
-  },
   showUsername: {
     type: Boolean,
-    default: false
+    default: false // Set true saat ingin menampilkan username
+  },
+  showPasswordConfirmation: {
+    type: Boolean,
+    default: false // Set true saat ingin menampilkan konfirmasi password
   }
 });
 </script>
