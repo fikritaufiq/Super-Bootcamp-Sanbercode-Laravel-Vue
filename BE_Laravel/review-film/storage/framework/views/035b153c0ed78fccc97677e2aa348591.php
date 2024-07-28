@@ -1,1 +1,0 @@
-<?php /**PATH C:\Users\LENOVO\Documents\Super Bootcamp Laravel Vue\BE_Laravel\review-film\resources\views/welcome.blade.php ENDPATH**/ ?>
