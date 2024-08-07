@@ -1,14 +1,19 @@
 <template>
-  <div id="app">
-      <router-view />
+  <div id="app" class="bg-base-200 min-h-screen text-white">
+  <transition name="fade">
+  <router-view />
+  </transition>
   </div>
 </template>
-
-<script setup>
-import { RouterView } from 'vue-router';
-</script>
+  
 
 <style>
+.fade-enter-active, .fade-leave-active {
+transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to  {
+opacity: 0;
+}
 body {
   background-color: #010814;
   color: white;
@@ -19,4 +24,6 @@ body {
 #app {
   min-height: 100vh;
 }
+
+
 </style>

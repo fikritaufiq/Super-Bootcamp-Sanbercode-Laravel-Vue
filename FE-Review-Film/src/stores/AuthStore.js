@@ -129,7 +129,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const updateUser = async (userData) => {
     try {
-      const response = await customAPI.put('/auth/update-user', userData);
+      const response = await customAPI.post('/auth/update-user', userData);
       if (response.data && response.data.message === 'Update user berhasil') {
         await getCurrentUser();
         console.log('Data pengguna berhasil diperbarui.');
@@ -138,7 +138,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
     } catch (error) {
       console.error("Gagal memperbarui data pengguna:", error.message);
-      throw error; // Lempar error untuk ditangani di tempat lain
+      throw error; 
     }
   };
 

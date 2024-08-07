@@ -17,14 +17,6 @@ tokenAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-customAPI.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('Kesalahan dalam permintaan API:', error.response?.data || error.message);
-    return Promise.reject(error);
-  }
-);
-
 customAPI.interceptors.request.use(
   (config) => {
     console.log("Mengirim permintaan ke:", config.url);
@@ -32,4 +24,12 @@ customAPI.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+customAPI.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('Kesalahan dalam permintaan API:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
 );
